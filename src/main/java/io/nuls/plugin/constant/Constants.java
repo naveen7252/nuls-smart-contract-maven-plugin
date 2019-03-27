@@ -1,4 +1,4 @@
-package io.nuls;
+package io.nuls.plugin.constant;
 
 /**
  * @author naveen

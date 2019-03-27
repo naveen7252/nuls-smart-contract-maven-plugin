@@ -1,10 +1,10 @@
-package io.nuls.mojo;
+package io.nuls.plugin.mojo;
 
-import io.nuls.helper.NulsSDKHelper;
+import io.nuls.plugin.util.Util;
+import io.nuls.plugin.helper.NulsSDKHelper;
 import io.nuls.sdk.core.model.Result;
 import io.nuls.sdk.core.model.dto.BalanceInfo;
 import io.nuls.sdk.core.utils.StringUtils;
-import io.nuls.util.Util;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Mojo;

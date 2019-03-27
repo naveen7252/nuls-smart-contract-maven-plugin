@@ -1,4 +1,4 @@
-package io.nuls.mojo;
+package io.nuls.plugin.mojo;
 
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;

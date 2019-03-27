@@ -1,8 +1,8 @@
-package io.nuls.mojo;
+package io.nuls.plugin.mojo;
 
-import io.nuls.helper.NulsSDKHelper;
+import io.nuls.plugin.util.Util;
+import io.nuls.plugin.helper.NulsSDKHelper;
 import io.nuls.sdk.core.model.Result;
-import io.nuls.util.Util;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Mojo;
@@ -28,8 +28,8 @@ public class CreateAccountMojo extends BaseNulsMojo {
             address = accList.get(0);
             String privateKey = NulsSDKHelper.getPrivateKey(address,password);
             getLog().info("********** Account Details **************");
-            getLog().info(" Address ="+address);
-            getLog().info("Private Key ="+privateKey);
+            getLog().info(" Address = "+address);
+            getLog().info("Private Key = "+privateKey);
         }else{
             getLog().info("********* Unable to create account ******");
         }

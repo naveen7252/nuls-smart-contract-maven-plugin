@@ -1,4 +1,4 @@
-package io.nuls.util;
+package io.nuls.plugin.util;
 
 import io.nuls.sdk.core.utils.StringUtils;
 

@@ -1,7 +1,7 @@
-package io.nuls.mojo;
+package io.nuls.plugin.mojo;
 
-import io.nuls.Constants;
-import io.nuls.helper.NulsSDKHelper;
+import io.nuls.plugin.constant.Constants;
+import io.nuls.plugin.helper.NulsSDKHelper;
 import io.nuls.sdk.core.model.Result;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
