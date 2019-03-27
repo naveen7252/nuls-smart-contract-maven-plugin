@@ -2,6 +2,7 @@ package io.nuls.plugin.mojo;
 
 import io.nuls.plugin.constant.Constants;
 import io.nuls.plugin.helper.NulsSDKHelper;
+import io.nuls.plugin.util.Util;
 import io.nuls.sdk.core.model.Result;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -16,19 +17,19 @@ import java.util.Map;
 public abstract class BaseNulsMojo extends AbstractMojo {
 
     @Parameter(property = "contract-lib-dir", defaultValue = "${project.basedir}/lib")
-    protected String contractLibJar;
+    private String contractLibJar;
 
     @Parameter(property = "dapp-jar", defaultValue = "${project.build.directory}/${project.build.finalName}.jar")
-    protected String dappJar;
+    String dappJar;
 
     @Parameter(defaultValue = "${project}", readonly = true, required = true)
-    protected MavenProject project;
+    private MavenProject project;
 
     @Parameter(property = "nuls-rpc-host", defaultValue = Constants.DEFAULT_IP)
-    protected String nulsRpcHost;
+    private String nulsRpcHost;
 
     @Parameter(property = "nuls-rpc-port", defaultValue = Constants.DEFAULT_PORT)
-    protected String nulsRpcPort;
+    private String nulsRpcPort;
 
     @Parameter(property = "chain-mode",defaultValue = Constants.CHAIN_MODE_TEST_NET)
     protected String chainMode;
@@ -36,14 +37,25 @@ public abstract class BaseNulsMojo extends AbstractMojo {
     @Parameter(property = "nuls-scan-url",defaultValue = Constants.NULS_SCAN_URL_TEST_NET)
     protected String nulScanUrl;
 
-    @Parameter(property = "gasLimit",defaultValue = "")
-    protected String gasLimit;
+    @Parameter(property = "gasLimit")
+    private String gasLimit;
 
-    @Parameter(property = "gasPrice",defaultValue = "")
-    protected String gasPrice;
+    @Parameter(property = "gasPrice")
+    private String gasPrice;
 
-    protected long defaultGasLimit = 100000L;
-    protected long defaultGasPrice = 100L;
+    private long defaultGasLimit = 100000L;
+    private long defaultGasPrice = 100L;
+
+    String getSenderEnv(){
+        return Util.getEnvProperty("sender");
+    }
+    String getPrivateKeyEnv(){
+        return Util.getEnvProperty("privateKey");
+    }
+
+    String getPasswordEnv(){
+        return Util.getEnvProperty("password");
+    }
 
     public String signAndBroadcastTx(String txHex,String address,String privKey,String password,boolean isEncrypted) throws MojoExecutionException{
         if(isEncrypted){
@@ -58,6 +70,17 @@ public abstract class BaseNulsMojo extends AbstractMojo {
                 Map<String,Object> data = NulsSDKHelper.getDataMap(result1);
                 String txHash = (String)data.get("value");
                 getLog().info("Transaction Hash: "+ txHash);
+                getLog().info("*********Contract Execution Result *************");
+                getLog().info("Waiting for transaction to confirm");
+                try {
+                    Thread.sleep(10000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                Result contractResult = NulsSDKHelper.getContractResult(txHash);
+                if(contractResult.isSuccess()){
+                    getLog().info(contractResult.toString());
+                }
                 return txHash;
             }
         }else{
@@ -71,21 +94,21 @@ public abstract class BaseNulsMojo extends AbstractMojo {
         getLog().info("************* USAGE ***************");
         switch (goal){
             case "create-account":
-                getLog().info("mvn nuls-sc:create-account [-Dpassword=<password>]");
+                getLog().info("mvn nuls-sc:create-account [-Dchain-mode=<testnet|mainnet>] [-Dpassword=<password>]");
                 break;
             case "get-balance":
-                getLog().info("mvn nuls-sc:get-balance -Daddress=<address>");
+                getLog().info("mvn nuls-sc:get-balance -Daddress=<address> [-Dchain-mode=<testnet|mainnet>]");
                 break;
             case "deploy-contract":
-                getLog().info("mvn nuls-sc:deploy-contract -Dsender=<senderAddress> [-DgasLimit=limit] [-DgasPrice=price] -Dpassword=<password>" +
+                getLog().info("mvn nuls-sc:deploy-contract -Dsender=<senderAddress> [-Dchain-mode=<testnet|mainnet>] [-DgasLimit=limit] [-DgasPrice=price] -Dpassword=<password>" +
                         " [-DprivateKey=<privKey>] [-Dargs=<-T text,-I number,-Z true>] [-Dremarks=<remarks>]");
                 break;
             case "call-contract":
-                getLog().info("mvn nuls-sc:call-contract -Dsender=<senderAddress> -DcontractAddress=<address> -DmethodName=<name> [-DgasLimit=limit] [-DgasPrice=price] -Dpassword=<password>" +
+                getLog().info("mvn nuls-sc:call-contract [-Dchain-mode=<testnet|mainnet>] -Dsender=<senderAddress> -DcontractAddress=<address> -DmethodName=<name> [-DgasLimit=limit] [-DgasPrice=price] -Dpassword=<password>" +
                         " [-DprivateKey=<privKey>] [-Dargs=<-T text,-I number,-Z true>] [-Dremarks=<remarks>]");
                 break;
             case "tx-by-hash":
-                getLog().info("mvn nuls-sc:tx-by-hash -DtxHash=<txHash>");
+                getLog().info("mvn nuls-sc:tx-by-hash -DtxHash=<txHash> [-Dchain-mode=<testnet|mainnet>]");
                 break;
             default:
                 getLog().info("mvn nuls-sc:help");

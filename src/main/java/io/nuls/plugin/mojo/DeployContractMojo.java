@@ -26,24 +26,33 @@ public class DeployContractMojo extends BaseNulsMojo {
     public void execute() throws MojoExecutionException, MojoFailureException {
         String sender = Util.getPropery("sender");
         if(StringUtils.isBlank(sender)){
-            getLog().error("Contract deployer address is required");
-            printUsage("deploy-contract");
-            throw new MojoExecutionException("Invalid args. address is required");
+            sender = getSenderEnv();
+            if(StringUtils.isBlank(sender)){
+                getLog().error("Contract deployer address is required");
+                printUsage("deploy-contract");
+                throw new MojoExecutionException("Invalid args. address is required");
+            }
         }
         String password = Util.getPropery("password");
         boolean isEncrypted = NulsSDKHelper.isAccountEncrypted(sender);
         if(StringUtils.isBlank(password) && isEncrypted){
-            getLog().error("Password is required for encrypted accounts to perform the action");
-            printUsage("deploy-contract");
-            throw new MojoExecutionException("Invalid args. password is required");
+            password = getPasswordEnv();
+            if(StringUtils.isBlank(password)){
+                getLog().error("Password is required for encrypted accounts to perform the action");
+                printUsage("deploy-contract");
+                throw new MojoExecutionException("Invalid args. password is required");
+            }
         }
         String privateKey = Util.getPropery("privateKey");
         if(StringUtils.isBlank(privateKey) && !isEncrypted){
             privateKey = NulsSDKHelper.getPrivateKey(sender,password);
             if(StringUtils.isBlank(privateKey)){
-                getLog().error("Private Key is required to perform the action");
-                printUsage("deploy-contract");
-                throw new MojoExecutionException("Invalid args. Private Key is required");
+                privateKey = getPrivateKeyEnv();
+                if(StringUtils.isBlank(privateKey)){
+                    getLog().error("Private Key is required to perform the action");
+                    printUsage("deploy-contract");
+                    throw new MojoExecutionException("Invalid args. Private Key is required");
+                }
             }
         }
         long gasLimit = Long.valueOf(StringUtils.isNotBlank(Util.getPropery("gasLimit")) ? Util.getPropery("gasLimit") : "0");
@@ -55,7 +64,6 @@ public class DeployContractMojo extends BaseNulsMojo {
             gasPrice = getDefaultGasPrice();
         }
         Path path = Paths.get(getDappJar());
-        System.out.println("path : "+path.toString());
         if (!Files.exists(path)) {
             throw new MojoExecutionException(String.format("Dapp jar file doesn't exist : %s \n"
                     + "Please make sure you have built the project.", dappJar));
@@ -70,14 +78,13 @@ public class DeployContractMojo extends BaseNulsMojo {
         Object[] args = Util.parseArgs(argsString);
         String remarks = Util.getPropery("remarks");
         long totalGas = LongUtils.mul(gasLimit, gasPrice);
-        List<Input> utxos = null;
+        List<Input> utxos;
         try {
            utxos = NulsSDKHelper.getUtxos(sender,totalGas);
            if(utxos == null || utxos.size() == 0){
                getLog().error("UTXos are not available for the account :"+sender);
                throw new MojoExecutionException("UTXos are not available for the account :"+sender);
            }
-           System.out.println("utxo size:"+utxos.size());
         } catch (Exception e) {
             getLog().error(e.getMessage());
             throw new MojoExecutionException(e.getMessage());

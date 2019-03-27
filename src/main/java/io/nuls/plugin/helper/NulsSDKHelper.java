@@ -18,6 +18,8 @@ import java.util.Map;
  */
 public class NulsSDKHelper {
 
+    private static RestFulUtils restFul = RestFulUtils.getInstance();
+
     static {
         String host = Util.getPropery("nuls-rpc-host");
         String port = Util.getPropery("nuls-rpc-port");
@@ -49,7 +51,7 @@ public class NulsSDKHelper {
     }
 
     public static String getPrivateKey(String address,String password) {
-        Result result = null;
+        Result result;
         if (StringUtils.isNotBlank(password)) {
             result = NulsSDKTool.getPrikey(address, password);
         } else {
@@ -84,8 +86,7 @@ public class NulsSDKHelper {
         if (rpcResult.getError() != null) {
             throw new Exception("Couldn't get UTXOs for the account :"+address);
         }
-        List<Input> inputs = (List<Input>) rpcResult.getResult();
-        return inputs;
+        return (List<Input>) rpcResult.getResult();
     }
 
     public static ContractTransactionCreatedReturnInfo createContract(String address,long gasPrice,long gasLimit,String contractCode,Object[] args,String remarks,List<Input> utxos){
@@ -105,6 +106,7 @@ public class NulsSDKHelper {
         }
         return null;
     }
+
     public static Map<String,Object> getDataMap(Result result){
         return (Map<String,Object>)result.getData();
     }
@@ -115,5 +117,9 @@ public class NulsSDKHelper {
 
     public static Result broadcastTransaction(String txHex){
         return NulsSDKTool.broadcastTransaction(txHex);
+    }
+
+    public static Result getContractResult(String txHash){
+        return restFul.get("/contract/result/"+txHash,null);
     }
 }

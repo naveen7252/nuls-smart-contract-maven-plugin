@@ -35,15 +35,15 @@ public class Util {
                 int index = str.indexOf(" ");
                 String type = str.substring(0,index);
                 String value = str.substring(3);
-                /*String[] arr = str.split(" ");
-                String type = arr[0];
-                String value = arr[1];*/
-                System.out.println("type:"+type +"--> value:"+value);
                 args.add(evaluateArgType(type,value));
             }
             return args.toArray();
         }
         return null;
+    }
+
+    public static String getEnvProperty(String name){
+        return System.getenv(name);
     }
     private static Object evaluateArgType(String type,String value){
         switch (type){
@@ -54,7 +54,7 @@ public class Util {
             case "-S":
                 return Short.valueOf(value);
             case "-C":
-                return Character.valueOf(value.charAt(0));
+                return value.charAt(0);
             case "-Z":
                 return Boolean.valueOf(value);
             case "-B":
