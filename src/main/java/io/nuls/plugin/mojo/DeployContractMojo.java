@@ -92,7 +92,7 @@ public class DeployContractMojo extends BaseNulsMojo {
         ContractTransactionCreatedReturnInfo contractInfo = NulsSDKHelper.createContract(sender,gasPrice,gasLimit,contractHex,args,remarks,utxos);
         if(null != contractInfo){
             getLog().info("************ Contract Details **************");
-            getLog().info("Contract Address :" +contractInfo.getContractAddress());
+            getLog().info("Contract Address: " +contractInfo.getContractAddress());
             signAndBroadcastTx(contractInfo.getTxHex(),sender,privateKey,password,isEncrypted);
         }
     }

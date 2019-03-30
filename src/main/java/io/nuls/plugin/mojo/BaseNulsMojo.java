@@ -9,6 +9,7 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 
+import java.util.Arrays;
 import java.util.Map;
 
 /**
@@ -64,16 +65,16 @@ public abstract class BaseNulsMojo extends AbstractMojo {
         Result result = NulsSDKHelper.signTransaction(txHex,address,privKey,null);
         if(result.isSuccess()){
             Map<String,Object> dataMap = NulsSDKHelper.getDataMap(result);
-            String txHex1 = (String)dataMap.get("value");
-            Result result1 = NulsSDKHelper.broadcastTransaction(txHex1);
-            if(result1.isSuccess()){
-                Map<String,Object> data = NulsSDKHelper.getDataMap(result1);
+            String signedTxHex = (String)dataMap.get("value");
+            Result broadcastResult = NulsSDKHelper.broadcastTransaction(signedTxHex);
+            if(broadcastResult.isSuccess()){
+                Map<String,Object> data = NulsSDKHelper.getDataMap(broadcastResult);
                 String txHash = (String)data.get("value");
                 getLog().info("Transaction Hash: "+ txHash);
                 getLog().info("*********Contract Execution Result *************");
                 getLog().info("Waiting for transaction to confirm");
                 try {
-                    Thread.sleep(10000);
+                    Thread.sleep(15000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
