@@ -4,12 +4,12 @@ import io.nuls.plugin.constant.Constants;
 import io.nuls.plugin.helper.NulsSDKHelper;
 import io.nuls.plugin.util.Util;
 import io.nuls.sdk.core.model.Result;
+import io.nuls.sdk.core.utils.StringUtils;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 
-import java.util.Arrays;
 import java.util.Map;
 
 /**
@@ -44,8 +44,19 @@ public abstract class BaseNulsMojo extends AbstractMojo {
     @Parameter(property = "gasPrice")
     private String gasPrice;
 
+    @Parameter(property = "sender")
+    private String sender;
+
+    @Parameter(property = "password")
+    private String password;
+
+    @Parameter(property = "privateKey")
+    private String privateKey;
+
     private long defaultGasLimit = 100000L;
     private long defaultGasPrice = 100L;
+
+    private boolean isAccountEncrypted;
 
     String getSenderEnv(){
         return Util.getEnvProperty("sender");
@@ -58,10 +69,7 @@ public abstract class BaseNulsMojo extends AbstractMojo {
         return Util.getEnvProperty("password");
     }
 
-    public String signAndBroadcastTx(String txHex,String address,String privKey,String password,boolean isEncrypted) throws MojoExecutionException{
-        if(isEncrypted){
-            privKey = NulsSDKHelper.getPrivateKey(address,password);
-        }
+    public String signAndBroadcastTx(String txHex,String address,String privKey) throws MojoExecutionException{
         Result result = NulsSDKHelper.signTransaction(txHex,address,privKey,null);
         if(result.isSuccess()){
             Map<String,Object> dataMap = NulsSDKHelper.getDataMap(result);
@@ -116,6 +124,45 @@ public abstract class BaseNulsMojo extends AbstractMojo {
         }
     }
 
+    String getSenderAddress(){
+        String sender = Util.getPropery("sender");
+        if(StringUtils.isBlank(sender)){
+            sender = getSender();
+            if(StringUtils.isBlank(sender)){
+                sender = getSenderEnv();
+            }
+        }
+        return sender;
+    }
+
+    String getSenderPassword(){
+        String password = Util.getPropery("password");
+        boolean isEncrypted = NulsSDKHelper.isAccountEncrypted(sender);
+        setAccountEncrypted(isEncrypted);
+        if(StringUtils.isBlank(password)){
+            if(StringUtils.isBlank(password)){
+                password = getPassword();
+                if(StringUtils.isBlank(password)){
+                    password = getPasswordEnv();
+                }
+            }
+        }
+        return password;
+    }
+
+    String getSenderPrivateKey(String sender,String password){
+        String privateKey = Util.getPropery("privateKey");
+        if(StringUtils.isBlank(privateKey)){
+            privateKey = getPrivateKey();
+            if(StringUtils.isBlank(privateKey)){
+                privateKey = getPrivateKeyEnv();
+                if(StringUtils.isBlank(privateKey)){
+                    privateKey = NulsSDKHelper.getPrivateKey(sender,password);
+                }
+            }
+        }
+        return privateKey;
+    }
     public String getContractLibJar() {
         return contractLibJar;
     }
@@ -186,5 +233,53 @@ public abstract class BaseNulsMojo extends AbstractMojo {
 
     public void setDefaultGasPrice(long defaultGasPrice) {
         this.defaultGasPrice = defaultGasPrice;
+    }
+
+    public String getChainMode() {
+        return chainMode;
+    }
+
+    public void setChainMode(String chainMode) {
+        this.chainMode = chainMode;
+    }
+
+    public String getNulScanUrl() {
+        return nulScanUrl;
+    }
+
+    public void setNulScanUrl(String nulScanUrl) {
+        this.nulScanUrl = nulScanUrl;
+    }
+
+    public String getSender() {
+        return sender;
+    }
+
+    public void setSender(String sender) {
+        this.sender = sender;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getPrivateKey() {
+        return privateKey;
+    }
+
+    public void setPrivateKey(String privateKey) {
+        this.privateKey = privateKey;
+    }
+
+    public boolean isAccountEncrypted() {
+        return isAccountEncrypted;
+    }
+
+    public void setAccountEncrypted(boolean accountEncrypted) {
+        isAccountEncrypted = accountEncrypted;
     }
 }
