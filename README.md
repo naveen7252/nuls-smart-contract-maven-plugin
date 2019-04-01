@@ -88,9 +88,22 @@ This is a custom maven plugin which enables developers to deploy and interact wi
    `mvn nuls-sc:call-contract [-Dchain-mode=<testnet|mainnet>] -Dsender=<senderAddress> -DcontractAddress=<address> -DmethodName=<name> [-DgasLimit=limit] [-DgasPrice=price] -Dpassword=<password>"  [-DprivateKey=<privKey>] [-Dargs=<-T text,-I number,-Z true>] [-Dremarks=<remarks>] `
    
     - senderAddress  - address of the account from which contract is being deployed/created
+    - contractAddress - address of the contract
+    - methodName  - method to call
     - chain-mode - contract to be deployed on testnet or mainnet. By default, contact is deployed to testnet
     - gasLimit  - gasLimit, an optional parameter, if not provided, default value is taken and any unused gas will be refunded after execution
     - gasPrice  - gasPrice, an optional parameter, if not provided, default value is taken
     - password  - password of the account, mandatory for encrypted accounts
     - privateKey - Private key of the account, mandatory only for non-encrypted accounts
     - args  - arguements to the contract creation, optional but depends on contact design.If contract needs arguements while creating it, args need to be passed
+
+
+3. create-account
+  
+   - To create account in NULS
+   
+   Usage:
+   
+   `mvn nuls-sc:create-account [-Dchain-mode=<testnet|mainnet>] [-Dpassword=<password>]`
+   
+   - If no password is provided, account will not be encrypted
