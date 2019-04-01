@@ -43,6 +43,54 @@ This is a custom maven plugin which enables developers to deploy and interact wi
          
         
         
+- By defauly, plugin runs agaisnt NULS testnet but can be asked to run against Mainnet with <mode> parameter. More information on the mode in goals section        
 
 ### Plug-in Goals
 
+1. deploy-contract
+
+    - To deploy smart contract to NULS block chain
+    
+    Usage : 
+    
+`mvn nuls-sc:deploy-contract -Dsender=<senderAddress> [-Dchain-mode=<testnet|mainnet>] [-DgasLimit=limit] [-DgasPrice=price] -Dpassword=<password> [-DprivateKey=<privKey>] [-Dargs=<-T text,-I number,-Z true>] [-Dremarks=<remarks>]`
+
+  Explanation: All parameter within <> are mandatory parameter and [] are optional parameters
+   
+   - nuls-sc - name of the plugin
+   - deploy-contract - name of the goal
+   - senderAddress  - address of the account from which contract is being deployed/created
+   - chain-mode - contract to be deployed on testnet or mainnet. By default, contact is deployed to testnet
+   - gasLimit  - gasLimit, an optional parameter, if not provided, default value is taken and any unused gas will be refunded after execution
+   - gasPrice  - gasPrice, an optional parameter, if not provided, default value is taken
+   - password  - password of the account, mandatory for encrypted accounts
+   - privateKey - Private key of the account, mandatory only for non-encrypted accounts
+   - args  - arguements to the contract creation, optional but depends on contact design.If contract needs arguements while creating it, args need to be passed
+   
+            - formate to send arguements: <-argType argValue,-argType argvalue ...>
+            - T - to send string value as arguement
+            - I - to send integer value as arguement
+            - L - to send long value as arguement
+            - S - to send short value as arguement
+            - C - to send char value as arguement
+            - Z - to send boolean value as arguement
+            - B - to send byte value as arguement
+            - D - to send double value as arguement
+            - F - to send float value as arguement
+
+
+2. call-contract
+
+   - To call NULS smart contract
+   
+   Usage: 
+   
+   `mvn nuls-sc:call-contract [-Dchain-mode=<testnet|mainnet>] -Dsender=<senderAddress> -DcontractAddress=<address> -DmethodName=<name> [-DgasLimit=limit] [-DgasPrice=price] -Dpassword=<password>"  [-DprivateKey=<privKey>] [-Dargs=<-T text,-I number,-Z true>] [-Dremarks=<remarks>] `
+   
+    - senderAddress  - address of the account from which contract is being deployed/created
+    - chain-mode - contract to be deployed on testnet or mainnet. By default, contact is deployed to testnet
+    - gasLimit  - gasLimit, an optional parameter, if not provided, default value is taken and any unused gas will be refunded after execution
+    - gasPrice  - gasPrice, an optional parameter, if not provided, default value is taken
+    - password  - password of the account, mandatory for encrypted accounts
+    - privateKey - Private key of the account, mandatory only for non-encrypted accounts
+    - args  - arguements to the contract creation, optional but depends on contact design.If contract needs arguements while creating it, args need to be passed
