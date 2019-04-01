@@ -79,6 +79,7 @@ This is a custom maven plugin which enables developers to deploy and interact wi
             - F - to send float value as arguement
 
 
+
 2. call-contract
 
    - To call NULS smart contract
@@ -98,6 +99,7 @@ This is a custom maven plugin which enables developers to deploy and interact wi
     - args  - arguements to the contract creation, optional but depends on contact design.If contract needs arguements while creating it, args need to be passed
 
 
+
 3. create-account
   
    - To create account in NULS
@@ -107,3 +109,83 @@ This is a custom maven plugin which enables developers to deploy and interact wi
    `mvn nuls-sc:create-account [-Dchain-mode=<testnet|mainnet>] [-Dpassword=<password>]`
    
    - If no password is provided, account will not be encrypted
+   
+   
+   
+4. get-balance
+
+    - To get balance of an account
+    
+    Usage:
+    
+    `mvn nuls-sc:get-balance -Daddress=<address> [-Dchain-mode=<testnet|mainnet>]`
+    
+    
+    
+5. tx-by-hash
+
+    - Get transaction information by hash
+    
+    Usage:
+    `mvn nuls-sc:tx-by-hash -DtxHash=<txHash> [-Dchain-mode=<testnet|mainnet>]`
+    
+    
+    
+6. help
+
+      - prints all commands usage
+      
+     Usage:
+     `mvn nuls-sc:help`
+     
+    
+### Change NULS node IP and Port:
+
+ - By default,plugin connectst to following address
+ 
+          TestNet: IP: 127.0.0.1 and Port: 8001
+           Mainnet: IP:1270.0.01  and Port: 6001
+                
+ - Changing default values:
+ 
+      `mvn nuls-sc:create-account [-Dnuls-rpc-host=<ipaddress>] [-Dnuls-rpc-port=<port>]`
+             
+             Where, nuls-rpc-host = IP address of running NULS node
+                    nuls-rpc-port = Port of running NULS node
+                    
+ ### Ways to provide default values to parameters:
+ 
+ - Most used parameters while working with the Plug-in are i.senderAddress  ii. Password iii.Private Key
+ - One time set up can be done to provide values to these parameters, so that develper doesn't need to provide them every time executing the goal.
+ 
+ Follwoing are the ways to provide  values:
+ 
+ 1. Pass values to parameter while executing the goal. It had highest priority and values provided by other ways are ignored.
+     Example: `mvn nuls-sc:deploy-contract -Dsender=<senderAddress> ...`
+     
+ 2. Provide values in the plugin section of pom.xml file. This has second highest priority.
+        
+        <plugin>
+                <groupId>io.nuls</groupId>
+                <artifactId>nuls-sc-maven-plugin</artifactId>
+                <version>1.0-SNAPSHOT</version>
+                <configuration>
+                    <sender>${sender.address}</sender>
+                    <password>${sender.password}</password>
+                    <privateKey>${sender.privateKey}</privateKey>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>install</phase>
+                        <goals>
+                            <goal>deploy-contract</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            
+  3. Set environemnts variables for most frequently used parameters: 
+  
+        Env variables can be set up for sender, password and privatekey
+        
+    
