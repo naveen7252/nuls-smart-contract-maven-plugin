@@ -1,9 +1,9 @@
-# NULS Smart Contract Maven Plug-in
+## NULS Smart Contract Maven Plug-in
 Maven Plugin to interact with NULS smart contracts
 
 This is a custom maven plugin which enables developers to deploy and interact with NULS smart contracts with simple maven commands.
 
-## What does it Do ?
+### What does it Do ?
 
 
 1. Contract Deployment:
@@ -22,7 +22,7 @@ This is a custom maven plugin which enables developers to deploy and interact wi
           - Can query the details of a transaction
           
           
-## How does it work?
+### How does it work?
 
 - This plugin works along with [nuls-maven-archetype](https://github.com/naveen7252/nuls-maven-archetype) , it is a maven archetype to   create smart contract project with the template.
 - Archetype adds this plugin automatically to the generated pom.xml file for the smart contract project
