@@ -1,7 +1,7 @@
 # NULS Smart Contract Maven Plug-in
 Maven Plugin to interact with NULS smart contracts
 
-This is a custom maven plugin which enables developers to deploy and interact with NULS smart contracts which are written in Java.
+This is a custom maven plugin which enables developers to deploy and interact with NULS smart contracts with simple maven commands.
 
 ## What does it Do ?
 
@@ -21,11 +21,12 @@ This is a custom maven plugin which enables developers to deploy and interact wi
           - Can get balance of an account
           - Can query the details of a transaction
           
+          
 ## How does it work?
 
 - This plugin works along with [nuls-maven-archetype](https://github.com/naveen7252/nuls-maven-archetype) , it is a maven archetype to   create smart contract project with the template.
-- Archetype adds this plugin automatically to the generated pom.xml file
-- If developer is creating smart contract project without the archetype, add the following section in pom.xml file under builds section
+- Archetype adds this plugin automatically to the generated pom.xml file for the smart contract project
+- If developer is creating smart contract project without the archetype, add the following section in pom.xml file under builds->plugins section
   
             <plugin>
                 <groupId>io.nuls</groupId>
@@ -43,7 +44,7 @@ This is a custom maven plugin which enables developers to deploy and interact wi
          
         
         
-- By defauly, plugin runs agaisnt NULS testnet but can be asked to run against Mainnet with <mode> parameter. More information on the mode in goals section        
+- By default, plug-in runs agaisnt NULS testnet but can be asked to run against Mainnet with <mode> parameter. More information on the mode in goals section        
 
 ### Plug-in Goals
 
@@ -53,7 +54,7 @@ This is a custom maven plugin which enables developers to deploy and interact wi
     
     Usage : 
     
-`mvn nuls-sc:deploy-contract -Dsender=<senderAddress> [-Dchain-mode=<testnet|mainnet>] [-DgasLimit=limit] [-DgasPrice=price] -Dpassword=<password> [-DprivateKey=<privKey>] [-Dargs=<-T text,-I number,-Z true>] [-Dremarks=<remarks>]`
+`mvn nuls-sc:deploy-contract -Dsender=<senderAddress> -Dchain-mode=[testnet|mainnet] -DgasLimit=[limit] -DgasPrice=[price] -Dpassword=<password> -DprivateKey=[privKey] -Dargs=[-T text,-I number,-Z true] -Dremarks=[remarks]`
 
   Explanation: All parameter within <> are mandatory parameter and [] are optional parameters
    
@@ -86,7 +87,7 @@ This is a custom maven plugin which enables developers to deploy and interact wi
    
    Usage: 
    
-   `mvn nuls-sc:call-contract [-Dchain-mode=<testnet|mainnet>] -Dsender=<senderAddress> -DcontractAddress=<address> -DmethodName=<name> [-DgasLimit=limit] [-DgasPrice=price] -Dpassword=<password>"  [-DprivateKey=<privKey>] [-Dargs=<-T text,-I number,-Z true>] [-Dremarks=<remarks>] `
+   `mvn nuls-sc:call-contract -Dchain-mode=[testnet|mainnet] -Dsender=<senderAddress> -DcontractAddress=<address> -DmethodName=<name> -DgasLimit=[limit] -DgasPrice=[price] -Dpassword=<password>"  -DprivateKey=[privKey] -Dargs=[-T text,-I number,-Z true] -Dremarks=[remarks] `
    
     - senderAddress  - address of the account from which contract is being deployed/created
     - contractAddress - address of the contract
@@ -96,7 +97,7 @@ This is a custom maven plugin which enables developers to deploy and interact wi
     - gasPrice  - gasPrice, an optional parameter, if not provided, default value is taken
     - password  - password of the account, mandatory for encrypted accounts
     - privateKey - Private key of the account, mandatory only for non-encrypted accounts
-    - args  - arguements to the contract creation, optional but depends on contact design.If contract needs arguements while creating it, args need to be passed
+    - args  - arguements to the contract method, optional but depends on method design.If contract method needs arguements while calling it, args need to be passed
 
 
 
@@ -106,7 +107,7 @@ This is a custom maven plugin which enables developers to deploy and interact wi
    
    Usage:
    
-   `mvn nuls-sc:create-account [-Dchain-mode=<testnet|mainnet>] [-Dpassword=<password>]`
+   `mvn nuls-sc:create-account -Dchain-mode=[testnet|mainnet] -Dpassword=[password]`
    
    - If no password is provided, account will not be encrypted
    
@@ -118,7 +119,7 @@ This is a custom maven plugin which enables developers to deploy and interact wi
     
     Usage:
     
-    `mvn nuls-sc:get-balance -Daddress=<address> [-Dchain-mode=<testnet|mainnet>]`
+    `mvn nuls-sc:get-balance -Daddress=<address> -Dchain-mode=[testnet|mainnet]`
     
     
     
@@ -127,7 +128,7 @@ This is a custom maven plugin which enables developers to deploy and interact wi
     - Get transaction information by hash
     
     Usage:
-    `mvn nuls-sc:tx-by-hash -DtxHash=<txHash> [-Dchain-mode=<testnet|mainnet>]`
+    `mvn nuls-sc:tx-by-hash -DtxHash=<txHash> -Dchain-mode=[testnet|mainnet]`
     
     
     
@@ -148,7 +149,7 @@ This is a custom maven plugin which enables developers to deploy and interact wi
                 
  - Changing default values:
  
-      `mvn nuls-sc:create-account [-Dnuls-rpc-host=<ipaddress>] [-Dnuls-rpc-port=<port>]`
+      `mvn nuls-sc:create-account -Dnuls-rpc-host=[ipaddress] -Dnuls-rpc-port=[port]`
              
              Where, nuls-rpc-host = IP address of running NULS node
                     nuls-rpc-port = Port of running NULS node
@@ -160,7 +161,7 @@ This is a custom maven plugin which enables developers to deploy and interact wi
  
  Follwoing are the ways to provide  values:
  
- 1. Pass values to parameter while executing the goal. It had highest priority and values provided by other ways are ignored.
+ 1. Pass values to parameter while executing the goal. It has highest priority and values provided by other ways are ignored.
      Example: `mvn nuls-sc:deploy-contract -Dsender=<senderAddress> ...`
      
  2. Provide values in the plugin section of pom.xml file. This has second highest priority.
@@ -184,8 +185,18 @@ This is a custom maven plugin which enables developers to deploy and interact wi
                 </executions>
             </plugin>
             
-  3. Set environemnts variables for most frequently used parameters: 
+  3. Set environemnts variables.This has least priority.
   
         Env variables can be set up for sender, password and privatekey
         
+    Windows:  
+        set sender=<senderAddress>
+        set password=<password>
+        set privateKey=<privateKey>
     
+    Linux:
+           export sender=<senderAddress>
+           export password=<password>
+           export privateKey=<privateKey>
+           
+           
