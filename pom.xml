@@ -3,10 +3,47 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>io.nuls.ccc</groupId>
   <artifactId>nuls-sc-maven-plugin</artifactId>
-  <packaging>maven-plugin</packaging>
   <version>1.0.0</version>
+  <packaging>maven-plugin</packaging>
+
   <name>nuls-smartcontract-maven-plugin Maven Mojo</name>
-  <url>http://maven.apache.org</url>
+  <description>A demo for deployment to the Central Repository via OSSRH</description>
+  <url>https://github.com/naveen7252/nuls-smart-contract-maven-plugin</url>
+
+  <licenses>
+    <license>
+      <name>MIT License</name>
+      <url>http://www.opensource.org/licenses/mit-license.php</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+
+  <developers>
+    <developer>
+      <name>Naveen7252</name>
+      <email>naveen.balamuri@gmail.com</email>
+    </developer>
+  </developers>
+
+  <scm>
+    <url>https://github.com/naveen7252/nuls-smart-contract-maven-plugin</url>
+    <connection>scm:git@github.com:naveen7252/nuls-smart-contract-maven-plugin.git</connection>
+    <developerConnection>git@github.com:naveen7252/nuls-smart-contract-maven-plugin.git</developerConnection>
+    <tag>HEAD</tag>
+  </scm>
+
+  <distributionManagement>
+    <snapshotRepository>
+      <id>ossrh</id>
+      <name>OSS Snapshots Repository</name>
+      <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+    </snapshotRepository>
+    <repository>
+      <id>ossrh</id>
+      <name>OSS Staging Repository</name>
+      <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+    </repository>
+  </distributionManagement>
 
   <properties>
     <java.version>1.8</java.version>
@@ -42,7 +79,7 @@
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>3.8.1</version>
+      <version>4.11</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -92,20 +129,58 @@
           </dependency>
         </dependencies>
       </plugin>
-    </plugins>
-    <pluginManagement>
-      <plugins>
+
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-release-plugin</artifactId>
-          <version>2.5.3</version>
-          <configuration>
-            <useReleaseProfile>true</useReleaseProfile>
-            <releaseProfiles>release</releaseProfiles>
-            <goals>deploy</goals>
-          </configuration>
+          <artifactId>maven-source-plugin</artifactId>
+          <version>2.2.1</version>
+          <executions>
+            <execution>
+              <id>attach-sources</id>
+              <goals>
+                <goal>jar-no-fork</goal>
+              </goals>
+            </execution>
+          </executions>
         </plugin>
-      </plugins>
-    </pluginManagement>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-javadoc-plugin</artifactId>
+          <version>2.9.1</version>
+          <executions>
+            <execution>
+              <id>attach-javadocs</id>
+              <goals>
+                <goal>jar</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-gpg-plugin</artifactId>
+        <version>1.5</version>
+        <executions>
+          <execution>
+            <id>sign-artifacts</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>sign</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.sonatype.plugins</groupId>
+        <artifactId>nexus-staging-maven-plugin</artifactId>
+        <version>1.6.8</version>
+        <extensions>true</extensions>
+        <configuration>
+          <serverId>ossrh</serverId>
+          <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+          <autoReleaseAfterClose>true</autoReleaseAfterClose>
+        </configuration>
+      </plugin>
+    </plugins>
   </build>
 </project>
